@@ -1,0 +1,102 @@
+package com.spring.mallapi.repository;
+
+import com.spring.mallapi.domain.Todo;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@Slf4j
+class TodoRepositoryTest {
+
+    @Autowired
+    private TodoRepository todoRepository;
+
+    @Test
+    public void testInsert() {
+        for (int i = 1; i <= 100; i++) {
+            Todo todo = Todo.builder()
+                    .title("Title..." + i)
+                    .dueDate(LocalDate.of(2024, 12, 31))
+                    .writer("user00")
+                    .build();
+
+        todoRepository.save(todo);
+        }
+    }
+
+    @DisplayName("데이터 조회 테스트")
+    @Test
+    void testRead() {
+        // given
+        Long tno = 33L;
+        // when
+        Optional<Todo> result = todoRepository.findById(tno);
+
+        Todo todo = result.orElseThrow();
+
+        // then
+        log.info("{}", todo);
+    }
+
+    @Test
+    public void testModify() {
+        Long tno = 33L;
+
+        Optional<Todo> result = todoRepository.findById(tno);
+
+        Todo todo = result.orElseThrow();
+        todo.changeTitle("Modified 33...");
+        todo.changeComplete(true);
+        todo.changeDueDate(LocalDate.of(2024, 10, 10));
+
+        todoRepository.save(todo);
+    }
+
+    @Test
+    public void testDelete() {
+        Long tno = 1L;
+
+        todoRepository.deleteById(tno);
+    }
+
+    @Test
+    public void testPaging() {
+
+        Pageable pageable =
+        PageRequest.of(0, 10, Sort.by("tno").descending());
+
+        Page<Todo> result = todoRepository.findAll(pageable);
+
+        log.info("{}", result.getTotalElements());
+
+        result.getContent().forEach(todo -> log.info("{}", todo));
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

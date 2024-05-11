@@ -1,0 +1,25 @@
+server:
+  port: 8181
+
+spring:
+  datasource:
+    url: jdbc:p6spy:mysql://localhost:3306/malldb?serverTimezone=Asia/Seoul
+    username: malldbuser
+    password: malldbuser
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  jpa:
+    # show-sql: true  ?? ??? ??? ???? ??
+    # ?? ?? -> ? DB? ?? ??? ??
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update # ?? DDL ?? ?? -> create? ???? ??? ???? ??? ?? ??.
+    database: mysql # DB ?? ??
+
+logging:
+  level:
+    p6spy: info
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
